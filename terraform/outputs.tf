@@ -1,10 +1,10 @@
-output "app_runner_url" {
-  description = "Public URL of the App Runner service"
-  value       = "https://${aws_apprunner_service.this.service_url}"
+output "service_url" {
+  description = "ALB URL for the net-worth-game service"
+  value       = "https://networth.wikihover.com"
 }
 
 output "rds_endpoint" {
-  description = "RDS PostgreSQL endpoint (for running migrate_sqlite.py)"
+  description = "RDS PostgreSQL endpoint"
   value       = aws_db_instance.postgres.address
 }
 
