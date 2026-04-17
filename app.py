@@ -87,24 +87,49 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 
 CATEGORY_META = {
-    "actors":               {"label": "Actors",         "emoji": "🎬", "min_nw": 20_000_000},
-    "singers":              {"label": "Singers",         "emoji": "🎤", "min_nw": 10_000_000},
-    "rappers":              {"label": "Rappers",         "emoji": "🎵", "min_nw": 10_000_000},
-    "rock-stars":           {"label": "Rock Stars",      "emoji": "🎸", "min_nw": 10_000_000},
-    "djs":                  {"label": "DJs",             "emoji": "🎧", "min_nw": 5_000_000},
-    "comedians":            {"label": "Comedians",       "emoji": "😂", "min_nw": 5_000_000},
-    "richest-comedians":    {"label": "Comedians",       "emoji": "😂", "min_nw": 5_000_000},
-    "models":               {"label": "Models",          "emoji": "💃", "min_nw": 5_000_000},
-    "directors":            {"label": "Directors",       "emoji": "🎥", "min_nw": 10_000_000},
-    "nba":                  {"label": "NBA Players",     "emoji": "🏀", "min_nw": 5_000_000},
-    "nfl":                  {"label": "NFL Players",     "emoji": "🏈", "min_nw": 5_000_000},
-    "soccer":               {"label": "Soccer Players",  "emoji": "⚽", "min_nw": 5_000_000},
-    "boxers":               {"label": "Boxers",          "emoji": "🥊", "min_nw": 5_000_000},
-    "tennis":               {"label": "Tennis Players",  "emoji": "🎾", "min_nw": 5_000_000},
+    "actors":               {"label": "Actors",          "emoji": "🎬", "min_nw": 100_000_000},
+    "singers":              {"label": "Singers",         "emoji": "🎤", "min_nw": 100_000_000},
+    "rappers":              {"label": "Rappers",         "emoji": "🎵", "min_nw": 50_000_000},
+    "richest-rappers":      {"label": "Rappers",         "emoji": "🎵", "min_nw": 50_000_000},
+    "rock-stars":           {"label": "Rock Stars",      "emoji": "🎸", "min_nw": 50_000_000},
+    "djs":                  {"label": "DJs",             "emoji": "🎧", "min_nw": 30_000_000},
+    "richest-djs":          {"label": "DJs",             "emoji": "🎧", "min_nw": 30_000_000},
+    "comedians":            {"label": "Comedians",       "emoji": "😂", "min_nw": 30_000_000},
+    "richest-comedians":    {"label": "Comedians",       "emoji": "😂", "min_nw": 30_000_000},
+    "models":               {"label": "Models",          "emoji": "💃", "min_nw": 20_000_000},
+    "directors":            {"label": "Directors",       "emoji": "🎥", "min_nw": 50_000_000},
+    "producers":            {"label": "Producers",       "emoji": "🎬", "min_nw": 50_000_000},
+    "authors":              {"label": "Authors",         "emoji": "📚", "min_nw": 30_000_000},
+    "nba":                  {"label": "NBA Players",     "emoji": "🏀", "min_nw": 40_000_000},
+    "nfl":                  {"label": "NFL Players",     "emoji": "🏈", "min_nw": 40_000_000},
+    "soccer":               {"label": "Soccer Players",  "emoji": "⚽", "min_nw": 40_000_000},
+    "richest-soccer":       {"label": "Soccer Players",  "emoji": "⚽", "min_nw": 40_000_000},
+    "boxers":               {"label": "Boxers",          "emoji": "🥊", "min_nw": 30_000_000},
+    "richest-boxers":       {"label": "Boxers",          "emoji": "🥊", "min_nw": 30_000_000},
+    "tennis":               {"label": "Tennis Players",  "emoji": "🎾", "min_nw": 30_000_000},
+    "richest-tennis":       {"label": "Tennis Players",  "emoji": "🎾", "min_nw": 30_000_000},
     "richest-billionaires": {"label": "Billionaires",    "emoji": "💰", "min_nw": 1_000_000_000},
-    "ceos":                 {"label": "CEOs",            "emoji": "👔", "min_nw": 100_000_000},
-    "authors":              {"label": "Authors",         "emoji": "📚", "min_nw": 5_000_000},
-    "producers":            {"label": "Producers",       "emoji": "🎬", "min_nw": 10_000_000},
+    "ceos":                 {"label": "CEOs",            "emoji": "👔", "min_nw": 500_000_000},
+    "business-executives":  {"label": "Business",        "emoji": "💼", "min_nw": 100_000_000},
+    "richest-businessmen":  {"label": "Business",        "emoji": "💼", "min_nw": 100_000_000},
+    "wall-street":          {"label": "Wall Street",     "emoji": "📈", "min_nw": 100_000_000},
+    "richest-celebrities":  {"label": "Celebrities",     "emoji": "⭐", "min_nw": 100_000_000},
+    "richest-baseball":     {"label": "Baseball Players","emoji": "⚾", "min_nw": 30_000_000},
+    "richest-golfers":      {"label": "Golfers",         "emoji": "⛳", "min_nw": 30_000_000},
+    "hockey":               {"label": "Hockey Players",  "emoji": "🏒", "min_nw": 20_000_000},
+    "race-car-drivers":     {"label": "Race Car Drivers","emoji": "🏎️", "min_nw": 30_000_000},
+    "olympians":            {"label": "Olympians",       "emoji": "🏅", "min_nw": 20_000_000},
+    "wrestlers":            {"label": "Wrestlers",       "emoji": "💪", "min_nw": 20_000_000},
+    "mma-net-worth":        {"label": "MMA Fighters",   "emoji": "🥋", "min_nw": 20_000_000},
+    "richest-coaches":      {"label": "Coaches",         "emoji": "📋", "min_nw": 20_000_000},
+    "richest-designers":    {"label": "Designers",       "emoji": "✏️", "min_nw": 50_000_000},
+    "republicans":          {"label": "Politicians",     "emoji": "🏛️", "min_nw": 50_000_000},
+    "democrats":            {"label": "Politicians",     "emoji": "🏛️", "min_nw": 50_000_000},
+    "presidents":           {"label": "Presidents",      "emoji": "🏛️", "min_nw": 10_000_000},
+    "richest-athletes":     {"label": "Athletes",        "emoji": "🏆", "min_nw": 50_000_000},
+    "richest-celebrity-chefs": {"label": "Celebrity Chefs", "emoji": "👨‍🍳", "min_nw": 20_000_000},
+    "lawyers":              {"label": "Lawyers",         "emoji": "⚖️", "min_nw": 30_000_000},
+    "royals":               {"label": "Royals",          "emoji": "👑", "min_nw": 50_000_000},
 }
 
 # ---------------------------------------------------------------------------
@@ -153,18 +178,28 @@ def _initials(name: str) -> str:
 @app.get("/api/game/challenge")
 async def game_challenge(entity: str = Query("", description="Hovered celebrity name")):
     """
-    Returns 5 celebrities with full net worth data — shuffled for display.
-    The JS client scores the user's ranking locally (no submit call needed).
+    Returns 5 celebrities: the hovered entity + 2 close in net worth + 2 from top 20.
+    Also returns 3 recommendations for "play next".
     """
-    # Find category from entity name
+    # Find entity and category
     category = None
+    entity_row = None
+    entity_nw = 0
     if entity:
-        row = db_query(
-            "SELECT category FROM celebrities WHERE name ILIKE %s LIMIT 1",
-            (f"%{entity}%",), fetchall=False
+        # Prefer exact match, then partial
+        erow = db_query(
+            "SELECT id, name, net_worth, net_worth_display, category FROM celebrities WHERE LOWER(name) = LOWER(%s) LIMIT 1",
+            (entity,), fetchall=False
         )
-        if row:
-            category = row[0]
+        if not erow:
+            erow = db_query(
+                "SELECT id, name, net_worth, net_worth_display, category FROM celebrities WHERE name ILIKE %s ORDER BY LENGTH(name) ASC LIMIT 1",
+                (f"%{entity}%",), fetchall=False
+            )
+        if erow:
+            category = erow[4]
+            entity_row = erow[:4]
+            entity_nw = erow[2] or 0
 
     # Fallback to most-populated known category
     if not category or category not in CATEGORY_META:
@@ -178,32 +213,77 @@ async def game_challenge(entity: str = Query("", description="Hovered celebrity 
 
     meta = CATEGORY_META.get(category, {"label": category.title(), "emoji": "⭐", "min_nw": 1_000_000})
 
-    # Pick 5 from top 200 famous celebs
-    rows = db_query(
+    # ── Get top 20 (famous pool) ──
+    top_rows = db_query(
         """SELECT id, name, net_worth, net_worth_display
            FROM celebrities
            WHERE category=%s AND net_worth >= %s AND net_worth IS NOT NULL
-           ORDER BY net_worth DESC LIMIT 200""",
+           ORDER BY net_worth DESC LIMIT 20""",
         (category, meta["min_nw"])
     )
 
-    if len(rows) < 5:
-        rows = db_query(
+    # ── Get ~10 neighbors close in net worth to the entity ──
+    neighbors = []
+    if entity_row and entity_nw:
+        neighbors = db_query(
+            """SELECT id, name, net_worth, net_worth_display
+               FROM celebrities
+               WHERE category=%s AND net_worth IS NOT NULL AND id != %s
+               ORDER BY ABS(net_worth - %s) ASC LIMIT 10""",
+            (category, entity_row[0], entity_nw)
+        )
+
+    # Fallback if not enough data
+    if len(top_rows) < 5 and not neighbors:
+        top_rows = db_query(
             """SELECT id, name, net_worth, net_worth_display
                FROM celebrities WHERE category=%s AND net_worth IS NOT NULL
-               ORDER BY net_worth DESC LIMIT 100""",
+               ORDER BY net_worth DESC LIMIT 50""",
             (category,)
         )
 
-    if len(rows) < 5:
+    if len(top_rows) < 3 and len(neighbors) < 2:
         return JSONResponse({"error": f"Not enough data for '{category}'"}, status_code=404)
 
-    picked = random.sample(rows, 5)
+    # ── Build the 5 picks ──
+    picked_ids = set()
+    picked = []
 
-    # Fetch Wikipedia photos (cached in DB)
+    # 1) The hovered entity
+    if entity_row:
+        picked.append(entity_row)
+        picked_ids.add(entity_row[0])
+
+    # 2) Pick 2 from neighbors (close net worth → harder to guess)
+    neighbor_pool = [r for r in neighbors if r[0] not in picked_ids]
+    random.shuffle(neighbor_pool)
+    for r in neighbor_pool[:2]:
+        picked.append(r)
+        picked_ids.add(r[0])
+
+    # 3) Fill remaining from top 20 (famous, easy to recognize)
+    top_pool = [r for r in top_rows if r[0] not in picked_ids]
+    random.shuffle(top_pool)
+    remaining = 5 - len(picked)
+    for r in top_pool[:remaining]:
+        picked.append(r)
+        picked_ids.add(r[0])
+
+    # If still not 5, fill from whatever is available
+    if len(picked) < 5:
+        all_pool = [r for r in (top_rows + neighbors) if r[0] not in picked_ids]
+        random.shuffle(all_pool)
+        for r in all_pool[:5 - len(picked)]:
+            picked.append(r)
+            picked_ids.add(r[0])
+
+    if len(picked) < 5:
+        return JSONResponse({"error": f"Not enough data for '{category}'"}, status_code=404)
+
+    # Fetch Wikipedia photos
     photos = await asyncio.gather(*[_get_photo(r[0], r[1]) for r in picked])
 
-    # Shuffle order for display — net_worth included so JS can score
+    # Shuffle for display
     order = list(range(5))
     random.shuffle(order)
 
@@ -211,19 +291,78 @@ async def game_challenge(entity: str = Query("", description="Hovered celebrity 
         {
             "id":               picked[i][0],
             "name":             picked[i][1],
-            "net_worth":        picked[i][2],        # JS uses this to score
-            "net_worth_display": picked[i][3],       # JS shows this on reveal
+            "net_worth":        picked[i][2],
+            "net_worth_display": picked[i][3],
             "photo_url":        photos[i],
             "initials":         _initials(picked[i][1]),
         }
         for i in order
     ]
 
+    # ── Recommendations: 3 people to play next ──
+    recommendations = []
+
+    # 1) Same category — someone not in this game
+    same_cat = db_query(
+        """SELECT id, name, net_worth_display, photo_url, category
+           FROM celebrities
+           WHERE category=%s AND net_worth IS NOT NULL AND id != ALL(%s)
+           ORDER BY net_worth DESC LIMIT 20""",
+        (category, list(picked_ids))
+    )
+    if same_cat:
+        r = random.choice(same_cat)
+        recommendations.append({
+            "name": r[1], "net_worth_display": r[2], "photo_url": r[3],
+            "category": r[4], "reason": f"More {meta['label']}"
+        })
+
+    # 2) Different category — pick a popular one
+    other_cats = [c for c in CATEGORY_META if c != category]
+    if other_cats:
+        other_cat = random.choice(other_cats)
+        other_meta = CATEGORY_META[other_cat]
+        diff_cat = db_query(
+            """SELECT id, name, net_worth_display, photo_url, category
+               FROM celebrities
+               WHERE category=%s AND net_worth >= %s AND net_worth IS NOT NULL
+               ORDER BY net_worth DESC LIMIT 10""",
+            (other_cat, other_meta["min_nw"])
+        )
+        if diff_cat:
+            r = random.choice(diff_cat)
+            recommendations.append({
+                "name": r[1], "net_worth_display": r[2], "photo_url": r[3],
+                "category": r[4], "reason": f"{other_meta['emoji']} {other_meta['label']}"
+            })
+
+    # 3) Another different category
+    if len(other_cats) >= 2:
+        used_cats = {category} | {rec.get("category") for rec in recommendations}
+        remaining_cats = [c for c in other_cats if c not in used_cats]
+        if remaining_cats:
+            third_cat = random.choice(remaining_cats)
+            third_meta = CATEGORY_META[third_cat]
+            third_rows = db_query(
+                """SELECT id, name, net_worth_display, photo_url, category
+                   FROM celebrities
+                   WHERE category=%s AND net_worth >= %s AND net_worth IS NOT NULL
+                   ORDER BY net_worth DESC LIMIT 10""",
+                (third_cat, third_meta["min_nw"])
+            )
+            if third_rows:
+                r = random.choice(third_rows)
+                recommendations.append({
+                    "name": r[1], "net_worth_display": r[2], "photo_url": r[3],
+                    "category": r[4], "reason": f"{third_meta['emoji']} {third_meta['label']}"
+                })
+
     return {
-        "category":       category,
-        "category_label": meta["label"],
-        "category_emoji": meta["emoji"],
-        "celebrities":    celebrities,               # shuffled, net_worth included
+        "category":        category,
+        "category_label":  meta["label"],
+        "category_emoji":  meta["emoji"],
+        "celebrities":     celebrities,
+        "recommendations": recommendations,
     }
 
 
