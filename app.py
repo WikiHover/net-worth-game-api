@@ -10,9 +10,6 @@ Env vars:
 import asyncio
 import os
 import random
-import time
-import uuid
-import threading
 from contextlib import asynccontextmanager
 
 import httpx
@@ -111,23 +108,6 @@ CATEGORY_META = {
 }
 
 # ---------------------------------------------------------------------------
-# In-memory challenge store
-# ---------------------------------------------------------------------------
-
-_challenges: dict[str, dict] = {}
-_challenges_lock = threading.Lock()
-CHALLENGE_TTL = 600
-
-
-def _evict_challenges():
-    now = time.time()
-    with _challenges_lock:
-        stale = [k for k, v in _challenges.items() if now - v["created_at"] > CHALLENGE_TTL]
-        for k in stale:
-            del _challenges[k]
-
-
-# ---------------------------------------------------------------------------
 # Wikipedia photo fetch
 # ---------------------------------------------------------------------------
 
@@ -172,9 +152,11 @@ def _initials(name: str) -> str:
 
 @app.get("/api/game/challenge")
 async def game_challenge(entity: str = Query("", description="Hovered celebrity name")):
-    _evict_challenges()
-
-    # Find category from entity
+    """
+    Returns 5 celebrities with full net worth data — shuffled for display.
+    The JS client scores the user's ranking locally (no submit call needed).
+    """
+    # Find category from entity name
     category = None
     if entity:
         row = db_query(
@@ -188,16 +170,15 @@ async def game_challenge(entity: str = Query("", description="Hovered celebrity 
     if not category or category not in CATEGORY_META:
         known = list(CATEGORY_META.keys())
         row = db_query(
-            f"SELECT category, COUNT(*) as cnt FROM celebrities "
-            f"WHERE category = ANY(%s) "
-            f"GROUP BY category ORDER BY cnt DESC LIMIT 1",
+            "SELECT category FROM celebrities WHERE category = ANY(%s) "
+            "GROUP BY category ORDER BY COUNT(*) DESC LIMIT 1",
             (known,), fetchall=False
         )
         category = row[0] if row else "actors"
 
     meta = CATEGORY_META.get(category, {"label": category.title(), "emoji": "⭐", "min_nw": 1_000_000})
 
-    # Pick 5 from top 200 famous celebs in category
+    # Pick 5 from top 200 famous celebs
     rows = db_query(
         """SELECT id, name, net_worth, net_worth_display
            FROM celebrities
@@ -209,8 +190,7 @@ async def game_challenge(entity: str = Query("", description="Hovered celebrity 
     if len(rows) < 5:
         rows = db_query(
             """SELECT id, name, net_worth, net_worth_display
-               FROM celebrities
-               WHERE category=%s AND net_worth IS NOT NULL
+               FROM celebrities WHERE category=%s AND net_worth IS NOT NULL
                ORDER BY net_worth DESC LIMIT 100""",
             (category,)
         )
@@ -220,78 +200,31 @@ async def game_challenge(entity: str = Query("", description="Hovered celebrity 
 
     picked = random.sample(rows, 5)
 
-    # Fetch photos async
+    # Fetch Wikipedia photos (cached in DB)
     photos = await asyncio.gather(*[_get_photo(r[0], r[1]) for r in picked])
 
-    # Correct ranking
-    sorted_by_nw = sorted(enumerate(picked), key=lambda x: x[1][2], reverse=True)
-    correct_ranking = {picked[i][0]: rank + 1 for rank, (i, _) in enumerate(sorted_by_nw)}
-
-    # Shuffle for display
+    # Shuffle order for display — net_worth included so JS can score
     order = list(range(5))
     random.shuffle(order)
 
-    celebrities = []
-    for idx in order:
-        r = picked[idx]
-        celebrities.append({
-            "id": r[0],
-            "name": r[1],
-            "photo_url": photos[idx],
-            "initials": _initials(r[1]),
-        })
-
-    challenge_id = str(uuid.uuid4())
-    with _challenges_lock:
-        _challenges[challenge_id] = {
-            "celebrities": {r[0]: {"name": r[1], "net_worth": r[2], "net_worth_display": r[3]} for r in picked},
-            "correct_ranking": correct_ranking,
-            "created_at": time.time(),
+    celebrities = [
+        {
+            "id":               picked[i][0],
+            "name":             picked[i][1],
+            "net_worth":        picked[i][2],        # JS uses this to score
+            "net_worth_display": picked[i][3],       # JS shows this on reveal
+            "photo_url":        photos[i],
+            "initials":         _initials(picked[i][1]),
         }
+        for i in order
+    ]
 
     return {
-        "challenge_id": challenge_id,
-        "category": category,
+        "category":       category,
         "category_label": meta["label"],
         "category_emoji": meta["emoji"],
-        "celebrities": celebrities,
+        "celebrities":    celebrities,               # shuffled, net_worth included
     }
-
-
-@app.post("/api/game/submit")
-async def game_submit(body: dict):
-    challenge_id = body.get("challenge_id", "")
-    user_ranking: list[int] = body.get("ranking", [])
-
-    with _challenges_lock:
-        challenge = _challenges.get(challenge_id)
-
-    if not challenge:
-        return JSONResponse({"error": "Challenge expired or not found"}, status_code=404)
-
-    correct = challenge["correct_ranking"]
-    celebs = challenge["celebrities"]
-
-    score = 0
-    results = []
-    for user_pos, celeb_id in enumerate(user_ranking, 1):
-        cor = correct.get(celeb_id, 0)
-        is_correct = (user_pos == cor)
-        if is_correct:
-            score += 1
-        c = celebs.get(celeb_id, {})
-        results.append({
-            "id": celeb_id,
-            "name": c.get("name", ""),
-            "net_worth_display": c.get("net_worth_display", ""),
-            "net_worth": c.get("net_worth", 0),
-            "correct_rank": cor,
-            "your_rank": user_pos,
-            "correct": is_correct,
-        })
-
-    results.sort(key=lambda x: x["correct_rank"])
-    return {"score": score, "max_score": 5, "perfect": score == 5, "results": results}
 
 
 # ---------------------------------------------------------------------------
