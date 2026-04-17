@@ -22,60 +22,45 @@ Data is scraped from public net worth sources and includes **24,242 celebrities*
 
 ---
 
+## How it works
+
+The game uses a **single API call**. The server returns all 5 celebrities with their net worth values included (shuffled). The JS client scores the user's ranking entirely locally — no second round-trip needed.
+
+```
+User hovers name → JS fetches /api/game/challenge
+                 → Server returns 5 celebs (shuffled) with net_worth included
+                 → User drags to rank
+                 → JS scores locally → instant result, no submit call
+```
+
+---
+
 ## API Endpoints
 
 ### `GET /api/game/challenge?entity={name}`
 
-Returns 5 famous celebrities from the same category as the hovered entity. Photos fetched from Wikipedia and cached.
+The only game endpoint. Returns 5 famous celebrities from the same category as the hovered entity, shuffled for display. Includes full net worth data so the client can score locally.
+
+Wikipedia photos are fetched on first request and cached in the DB.
 
 **Example:** `GET /api/game/challenge?entity=Taylor+Swift`
 
 ```json
 {
-  "challenge_id": "uuid",
   "category": "singers",
   "category_label": "Singers",
   "category_emoji": "🎤",
   "celebrities": [
-    { "id": 123, "name": "Rihanna",       "photo_url": "https://upload.wikimedia...", "initials": "R" },
-    { "id": 456, "name": "Jay-Z",          "photo_url": "https://upload.wikimedia...", "initials": "JZ" },
-    { "id": 789, "name": "Taylor Swift",   "photo_url": "https://upload.wikimedia...", "initials": "TS" },
-    { "id": 321, "name": "Paul McCartney", "photo_url": "https://upload.wikimedia...", "initials": "PM" },
-    { "id": 654, "name": "Elton John",     "photo_url": "https://upload.wikimedia...", "initials": "EJ" }
+    { "id": 123, "name": "Rihanna",       "net_worth": 1400000000, "net_worth_display": "$1.4 Billion", "photo_url": "https://upload.wikimedia...", "initials": "R"  },
+    { "id": 456, "name": "Jay-Z",          "net_worth": 2500000000, "net_worth_display": "$2.5 Billion", "photo_url": "https://upload.wikimedia...", "initials": "JZ" },
+    { "id": 789, "name": "Taylor Swift",   "net_worth": 1100000000, "net_worth_display": "$1.1 Billion", "photo_url": "https://upload.wikimedia...", "initials": "TS" },
+    { "id": 321, "name": "Paul McCartney", "net_worth": 1300000000, "net_worth_display": "$1.3 Billion", "photo_url": "https://upload.wikimedia...", "initials": "PM" },
+    { "id": 654, "name": "Elton John",     "net_worth":  550000000, "net_worth_display": "$550 Million",  "photo_url": "https://upload.wikimedia...", "initials": "EJ" }
   ]
 }
 ```
 
----
-
-### `POST /api/game/submit`
-
-Validates the user's ranking and returns the score.
-
-**Request:**
-```json
-{
-  "challenge_id": "uuid",
-  "ranking": [456, 123, 654, 321, 789]
-}
-```
-`ranking` is an array of celebrity IDs ordered richest → poorest (user's guess).
-
-**Response:**
-```json
-{
-  "score": 3,
-  "max_score": 5,
-  "perfect": false,
-  "results": [
-    { "name": "Jay-Z",          "net_worth_display": "$2.5 Billion", "correct_rank": 1, "your_rank": 1, "correct": true  },
-    { "name": "Paul McCartney", "net_worth_display": "$1.3 Billion", "correct_rank": 2, "your_rank": 4, "correct": false },
-    { "name": "Elton John",     "net_worth_display": "$550 Million", "correct_rank": 3, "your_rank": 3, "correct": true  },
-    { "name": "Rihanna",        "net_worth_display": "$1.4 Billion", "correct_rank": 4, "your_rank": 2, "correct": false },
-    { "name": "Taylor Swift",   "net_worth_display": "$1.1 Billion", "correct_rank": 5, "your_rank": 5, "correct": true  }
-  ]
-}
-```
+The JS feed (`networth_rank.js`) sorts celebrities by `net_worth` desc to determine the correct ranking, then compares against the user's drag order to compute score (0–5) and grade (S/A/B/C) — entirely client-side.
 
 ---
 
